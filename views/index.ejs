@@ -139,6 +139,18 @@
       transition: width 0.3s;
     }
     
+    .streak-info {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #737373;
+      font-weight: 500;
+    }
+    
+    .streak-number {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+    
     .task-actions {
       display: flex;
       gap: 8px;
@@ -193,7 +205,7 @@
       constructor(props) {
         super(props);
         this.state = {
-          tasks: <%= JSON.stringify(tasks) %>,
+          tasks: <%- JSON.stringify(tasks) %>,
           taskName: '',
           taskTarget: '',
           showForm: false
@@ -303,6 +315,11 @@
                       <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progress}%"></div>
                       </div>
+                      ${task.streak > 0 && html`
+                        <div class="streak-info">
+                          🔥 <span class="streak-number">${task.streak}</span> day${task.streak !== 1 ? 's' : ''} streak
+                        </div>
+                      `}
                     </div>
                     <div class="task-actions">
                       <button 
