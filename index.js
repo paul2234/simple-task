@@ -62,13 +62,13 @@ function calculateStreak(history) {
 // Get today's tasks for display
 function getTodaysTasks() {
   const today = getToday();
-  return Object.keys(taskRegistry).map((name, index) => {
+  return Object.keys(taskRegistry).map((name) => {
     const taskData = taskRegistry[name];
     const current = taskData.history[today] || 0;
     const streak = calculateStreak(taskData.history);
     
     return {
-      id: index,
+      id: name,
       name,
       target: taskData.target,
       current,
@@ -143,16 +143,15 @@ app.post('/api/tasks', (req, res) => {
 });
 
 app.post('/api/tasks/:id/increment', (req, res) => {
-  const tasks = getTodaysTasks();
-  const task = tasks[parseInt(req.params.id)];
+  const taskName = decodeURIComponent(req.params.id);
+  const taskData = taskRegistry[taskName];
   
-  if (task) {
+  if (taskData) {
     const today = getToday();
-    const taskData = taskRegistry[task.name];
     taskData.history[today] = (taskData.history[today] || 0) + 1;
     
     const updatedTasks = getTodaysTasks();
-    const updatedTask = updatedTasks[parseInt(req.params.id)];
+    const updatedTask = updatedTasks.find(t => t.name === taskName);
     res.json(updatedTask);
   } else {
     res.status(404).json({ error: 'Task not found' });
@@ -160,11 +159,10 @@ app.post('/api/tasks/:id/increment', (req, res) => {
 });
 
 app.delete('/api/tasks/:id', (req, res) => {
-  const tasks = getTodaysTasks();
-  const task = tasks[parseInt(req.params.id)];
+  const taskName = decodeURIComponent(req.params.id);
   
-  if (task) {
-    delete taskRegistry[task.name];
+  if (taskRegistry[taskName]) {
+    delete taskRegistry[taskName];
   }
   
   res.json({ success: true });

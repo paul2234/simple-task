@@ -241,7 +241,7 @@
       }
 
       incrementTask = async (taskId) => {
-        const response = await fetch(`/api/tasks/${taskId}/increment`, {
+        const response = await fetch(`/api/tasks/${encodeURIComponent(taskId)}/increment`, {
           method: 'POST'
         });
 
@@ -252,7 +252,7 @@
       }
 
       deleteTask = async (taskId) => {
-        await fetch(`/api/tasks/${taskId}`, {
+        await fetch(`/api/tasks/${encodeURIComponent(taskId)}`, {
           method: 'DELETE'
         });
 
